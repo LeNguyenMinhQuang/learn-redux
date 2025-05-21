@@ -1,6 +1,6 @@
+import { Container } from "react-bootstrap";
 import Header from "./components/Header";
 import Tabs from "./components/Tabs";
-import { Container } from "react-bootstrap";
 
 function App() {
     return (
