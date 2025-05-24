@@ -6,18 +6,20 @@ import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Form from "react-bootstrap/Form";
 
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { createUser, resetCreate } from "../../redux/user/user.slide";
+import {
+    createUserPending,
+    resetCreate,
+} from "../../redux/user/user.saga.slide";
 
 interface IProps {
     handleClose: () => void;
+    page: number;
 }
 
-function CreateUserForm({ handleClose }: IProps) {
+function CreateUserForm({ handleClose, page }: IProps) {
     // setup
     const dispatch = useAppDispatch();
-    const isCreateSucess = useAppSelector(
-        (state) => state.users.isCreateSuccess
-    );
+    const { isCreateSuccess } = useAppSelector((state) => state.usersSaga);
 
     // state
     const [userName, setUserName] = useState<string>("");
@@ -25,14 +27,21 @@ function CreateUserForm({ handleClose }: IProps) {
 
     // Life cycle
     useEffect(() => {
-        if (isCreateSucess === true) {
-            toast.success("Created User");
+        if (isCreateSuccess === "success") {
             setUserName("");
             setUserEmail("");
             dispatch(resetCreate());
+            toast.success("User created");
             handleClose();
         }
-    }, [isCreateSucess, dispatch, handleClose]);
+        if (isCreateSuccess === "failed") {
+            setUserName("");
+            setUserEmail("");
+            dispatch(resetCreate());
+            toast.error("Error");
+            handleClose();
+        }
+    }, [isCreateSuccess, dispatch, handleClose]);
 
     // function
     const handleChangeInput = (value: string, type: string) => {
@@ -50,7 +59,7 @@ function CreateUserForm({ handleClose }: IProps) {
             toast.warning("Information missing!");
             return;
         }
-        dispatch(createUser({ userName, userEmail }));
+        dispatch(createUserPending({ userName, userEmail, page }));
     };
 
     return (
@@ -75,9 +84,15 @@ function CreateUserForm({ handleClose }: IProps) {
                     onChange={(e) => handleChangeInput(e.target.value, "email")}
                 />
             </FloatingLabel>
-            <Button onClick={() => handleSubmit()} className="mt-3">
-                Create
-            </Button>
+            {isCreateSuccess !== "pending" ? (
+                <Button onClick={() => handleSubmit()} className="mt-3">
+                    Create
+                </Button>
+            ) : (
+                <Button className="mt-3" disabled>
+                    Creating...
+                </Button>
+            )}
         </>
     );
 }

@@ -3,6 +3,7 @@ import Tabs from "react-bootstrap/Tabs";
 import UserTable from "./UserTable";
 import PostTable from "./PostTable";
 import Count from "./Count";
+import UserTableSaga from "./UserTableSaga";
 
 function MyTab() {
     return (
@@ -21,7 +22,7 @@ function MyTab() {
                 <Count />
             </Tab>
             <Tab eventKey="user-saga" title="UsersSaga">
-                UserSaga
+                <UserTableSaga />
             </Tab>
             <Tab eventKey="blog-saga" title="BlogsSaga">
                 BlogSaga

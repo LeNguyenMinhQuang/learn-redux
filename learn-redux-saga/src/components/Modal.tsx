@@ -10,9 +10,17 @@ interface IAppModal {
     handleClose: () => void;
     animation: boolean;
     user?: IUsers | null;
+    page: number;
 }
 
-function AppModal({ show, type, handleClose, animation, user }: IAppModal) {
+function AppModal({
+    show,
+    type,
+    handleClose,
+    animation,
+    user,
+    page,
+}: IAppModal) {
     return (
         <Modal
             show={show}
@@ -30,7 +38,7 @@ function AppModal({ show, type, handleClose, animation, user }: IAppModal) {
                         </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <CreateUserForm handleClose={handleClose} />
+                        <CreateUserForm handleClose={handleClose} page={page} />
                     </Modal.Body>
                     <Modal.Footer></Modal.Footer>
                 </>
@@ -60,7 +68,11 @@ function AppModal({ show, type, handleClose, animation, user }: IAppModal) {
                         </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <EditUserForm user={user} handleClose={handleClose} />
+                        <EditUserForm
+                            user={user}
+                            handleClose={handleClose}
+                            page={page}
+                        />
                     </Modal.Body>
                     <Modal.Footer></Modal.Footer>
                 </>
@@ -76,6 +88,7 @@ function AppModal({ show, type, handleClose, animation, user }: IAppModal) {
                         <DeleteUserForm
                             userId={user?.id}
                             handleClose={handleClose}
+                            page={page}
                         />
                     </Modal.Body>
                     <Modal.Footer></Modal.Footer>

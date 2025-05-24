@@ -18,6 +18,7 @@ import postReducer from "./post/post.slide";
 import appReducer from "./app/app.slice";
 import countReducer from "./counter/counter.slide";
 import rootSaga from "./saga/root.saga";
+import userSagaReducer from "./user/user.saga.slide";
 
 const persistConfig = {
     key: "root",
@@ -33,6 +34,7 @@ const rootReducer = combineReducers({
     post: postReducer,
     app: appReducer,
     count: countReducer,
+    usersSaga: userSagaReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

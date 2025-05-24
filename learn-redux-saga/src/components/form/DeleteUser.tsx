@@ -4,25 +4,29 @@ import { toast } from "react-toastify";
 import { Button } from "react-bootstrap";
 
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { resetDelete, deleteUser } from "../../redux/user/user.slide";
+import {
+    deleteUserPending,
+    resetDelete,
+} from "../../redux/user/user.saga.slide";
 
 interface IProps {
     userId?: string | undefined;
     handleClose: () => void;
+    page: number;
 }
 
-function DeleteUserForm({ userId, handleClose }: IProps) {
+function DeleteUserForm({ userId, handleClose, page }: IProps) {
     // setup
     const dispatch = useAppDispatch();
     const isDeleteSuccess = useAppSelector(
-        (state) => state.users.isDeleteSuccess
+        (state) => state.usersSaga.isDeleteSuccess
     );
 
     // state
 
     // Life cycle
     useEffect(() => {
-        if (isDeleteSuccess === true) {
+        if (isDeleteSuccess === "success") {
             toast.success("Deleted User");
             dispatch(resetDelete());
             handleClose();
@@ -30,7 +34,7 @@ function DeleteUserForm({ userId, handleClose }: IProps) {
     }, [isDeleteSuccess, dispatch, handleClose]);
 
     const handleSubmit = () => {
-        dispatch(deleteUser({ userId }));
+        dispatch(deleteUserPending({ id: userId, page }));
     };
 
     return (

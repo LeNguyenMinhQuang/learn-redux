@@ -7,18 +7,22 @@ import { Button } from "react-bootstrap";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import type { IUsers } from "../../interface/UserInterface";
 import { toast } from "react-toastify";
-import { resetUpdate, updateUser } from "../../redux/user/user.slide";
+import {
+    resetUpdate,
+    updateUserPending,
+} from "../../redux/user/user.saga.slide";
 
 interface IProps {
     user?: IUsers | null;
     handleClose: () => void;
+    page: number;
 }
 
-function EditUserForm({ user, handleClose }: IProps) {
+function EditUserForm({ user, handleClose, page }: IProps) {
     // setup
     const dispatch = useAppDispatch();
     const isUpdateSuccess = useAppSelector(
-        (state) => state.users.isUpdateSuccess
+        (state) => state.usersSaga.isUpdateSuccess
     );
 
     // state
@@ -32,8 +36,8 @@ function EditUserForm({ user, handleClose }: IProps) {
 
     // life cycle
     useEffect(() => {
-        if (isUpdateSuccess) {
-            toast.success(`Edited User}`);
+        if (isUpdateSuccess === "success") {
+            toast.success("Update success");
             dispatch(resetUpdate());
             handleClose();
         }
@@ -58,11 +62,13 @@ function EditUserForm({ user, handleClose }: IProps) {
             toast.warning("Information missing!");
             return;
         }
-        const userData = {
-            userId: user?.id,
-            ...userInfo,
+        const update = {
+            id: user?.id,
+            page,
+            name: userInfo.userName,
+            email: userInfo.userEmail,
         };
-        dispatch(updateUser(userData));
+        dispatch(updateUserPending(update));
     };
 
     return (
@@ -91,9 +97,15 @@ function EditUserForm({ user, handleClose }: IProps) {
                     }}
                 />
             </FloatingLabel>
-            <Button className="mt-3" onClick={() => handleSubmit()}>
-                Save
-            </Button>
+            {isUpdateSuccess !== "pending" ? (
+                <Button className="mt-3" onClick={() => handleSubmit()}>
+                    Update
+                </Button>
+            ) : (
+                <Button className="mt-3" disabled>
+                    Updating...
+                </Button>
+            )}
         </>
     );
 }

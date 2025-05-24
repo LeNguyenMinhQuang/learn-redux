@@ -120,14 +120,14 @@ export const UserSlice = createSlice({
         builder.addCase(fetchListUser.fulfilled, (state, action) => {
             state.listUsers = action.payload;
         });
-        builder.addCase(createUser.fulfilled, (state, action) => {
+        builder.addCase(createUser.fulfilled, (state) => {
             // state.listUsers = [...state.listUsers, action.payload];
             state.isCreateSuccess = true;
         });
-        builder.addCase(updateUser.fulfilled, (state, action) => {
+        builder.addCase(updateUser.fulfilled, (state) => {
             state.isUpdateSuccess = true;
         });
-        builder.addCase(deleteUser.fulfilled, (state, action) => {
+        builder.addCase(deleteUser.fulfilled, (state) => {
             state.isDeleteSuccess = true;
         });
     },

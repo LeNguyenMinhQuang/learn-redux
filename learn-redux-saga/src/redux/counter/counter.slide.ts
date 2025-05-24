@@ -1,5 +1,8 @@
-import { createSlice } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit";
+import {
+    createSlice,
+    type PayloadAction,
+    createAction,
+} from "@reduxjs/toolkit";
 
 export interface CounterState {
     value: number;
@@ -10,6 +13,13 @@ const initialState: CounterState = {
     value: 0,
     status: "idle",
 };
+
+export const increaseSagaSuccess = createAction<{ value: number }>( //viết ntn thì viết logic vào extra builder
+    "increaseSagaSuccess"
+);
+export const decreaseSagaSuccess = createAction<{ value: number }>( //còn thế này thì không cần
+    "counter/decreaseSagaSuccess"
+);
 
 export const counterSlice = createSlice({
     name: "counter",
@@ -27,14 +37,14 @@ export const counterSlice = createSlice({
         increaseSagaStart: (state) => {
             state.status = "loading";
         },
-        increaseSagaSuccess: (
-            state,
-            action: PayloadAction<{ value: number }>
-        ) => {
-            //action chính là payload từ saga
-            state.status = "idle";
-            state.value += action.payload.value;
-        },
+        // increaseSagaSuccess: (
+        //     state,
+        //     action: PayloadAction<{ value: number }>
+        // ) => {
+        //     //action chính là payload từ saga
+        //     state.status = "idle";
+        //     state.value += action.payload.value;
+        // },
         increaseSagaFailed: (state) => {
             state.status = "failed";
         },
@@ -53,18 +63,19 @@ export const counterSlice = createSlice({
             state.status = "failed";
         },
     },
+    extraReducers: (builder) => {
+        builder.addCase(
+            increaseSagaSuccess,
+            (state, action: PayloadAction<{ value: number }>) => {
+                state.status = "idle";
+                state.value += action.payload.value;
+            }
+        );
+    },
 });
 
 // Action creators are generated for each case reducer function
-export const {
-    increment,
-    decrement,
-    increaseSagaStart,
-    increaseSagaSuccess,
-    increaseSagaFailed,
-    decreaseSagaStart,
-    decreaseSagaSuccess,
-    decreaseSagaFailed,
-} = counterSlice.actions;
+export const { increment, decrement, increaseSagaStart, decreaseSagaStart } =
+    counterSlice.actions;
 
 export default counterSlice.reducer;
